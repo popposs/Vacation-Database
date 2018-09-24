@@ -14,6 +14,9 @@ services:
       - env_file
     volumes:
       - .:/opt/services/flaskapp/src
+    depends_on:
+      - flaskapp
+      - nginx
     networks:
       - db_nw
       - web_nw
@@ -27,7 +30,7 @@ services:
       - ./conf.d:/etc/nginx/conf.d
     networks:
       - web_nw
-    depends_on: 
+    depends_on:
       - flaskapp
 networks:
   db_nw:
