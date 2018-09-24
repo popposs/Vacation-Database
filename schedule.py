@@ -1,4 +1,4 @@
-import calendar, datetime
+import calendar, datetime, datedelta
 from reservations import Reservation
 from database import db_session
 

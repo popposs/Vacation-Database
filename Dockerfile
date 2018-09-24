@@ -17,8 +17,9 @@ WORKDIR /opt/services/flaskapp/src
 
 RUN pipenv install --system
 
-#RUN python3 setup.py install
 #RUN pip install -r requirements.txt
 COPY . /opt/services/flaskapp/src
+RUN python3 setup.py install
+
 EXPOSE 5090
 CMD ["python", "app.py"]
