@@ -4,7 +4,8 @@ import os
 from flask import Flask, render_template, redirect, url_for
 from forms import SignupForm
 
-from models import Signups
+from accounts import Accounts
+from reservations import Reservations
 from database import db_session
 
 app = Flask(__name__)
@@ -14,7 +15,7 @@ app.secret_key = os.environ['APP_SECRET_KEY']
 def signup():
     form = SignupForm()
     if form.validate_on_submit():
-        signup = Signups(name=form.name.data, email=form.email.data, date_signed_up=datetime.datetime.now())
+        signup = Accounts(name=form.name.data, email=form.email.data)
         db_session.add(signup)
         db_session.commit()
         return redirect(url_for('success'))
