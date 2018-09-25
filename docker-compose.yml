@@ -1,6 +1,7 @@
 version: '3'
 services:
   db:
+    restart: always
     image: "postgres:9.6.5"
     volumes:
       - "dbdata:/var/lib/postgresql/data"
@@ -9,6 +10,7 @@ services:
     networks:
       - db_nw
   flaskapp:
+    restart: always
     build: .
     env_file:
       - env_file
@@ -23,6 +25,7 @@ services:
     depends_on:
       - db
   nginx:
+    restart: always
     image: "nginx:1.13.5"
     ports:
       - "8080:80"
