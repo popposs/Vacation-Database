@@ -29,11 +29,35 @@
                 return [ reservedDates.indexOf(string) == -1 ]
             };
 
-            $(function() {
-                $( ".dtpick" ).datepicker({
-                    beforeShowDay: DisableSpecificDates,
-                    minDate: new Date()
-                });
+            // $(function() {
+            //     $( ".dtpick" ).datepicker({
+            //         beforeShowDay: DisableSpecificDates,
+            //         minDate: new Date()
+            //     });
+            // });
+
+            function getDate( element ) {
+                let date;
+                try {
+                    date = $.datepicker.parseDate( dateFormat, element.value );
+                } catch( error ) {
+                    date = null;
+                }
+                return date;
+            }
+
+            let dates = $("#arrival_date, #departure_date").datepicker({
+                defaultDate: "+1d",
+                changeMonth: true,
+                beforeShowDay: DisableSpecificDates,
+                minDate: '+1d',
+                maxDate: '+1m',
+                onSelect: function(selectedDate) {
+                    let option = this.id == "arrival_date" ? "minDate" : "maxDate",
+                        instance = $(this).data("datepicker"),
+                        date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+                    dates.not(this).datepicker("option", option, date);
+                }
             });
         </script>
     </head>
@@ -48,6 +72,9 @@
             {{ form.hidden_tag() }}
             {{ "Arrival" }} {{ form.arrival_date(class="dtpick") }}
             {{ "Departure" }} {{ form.departure_date(class="dtpick") }}
+
+            <!-- <label for="arrival_date">From</label> <input type="text" id="arrival_date" name="arrival_date"/> -->
+            <!-- <label for="to">to</label> <input type="text" id="to" name="to"/> -->
             <button type="submit">Go</button>
         </form>
     </body>

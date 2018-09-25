@@ -18,6 +18,7 @@ app.secret_key = os.environ['APP_SECRET_KEY']
 def signup():
     form = SignupForm()
     if form.validate_on_submit():
+        print(form.arrival_date.data, form.departure_date.data)
         arrival =  datetime.strptime(form.arrival_date.data.strftime('%x'), "%m/%d/%y").date()
         departure = datetime.strptime(form.departure_date.data.strftime('%x'), "%m/%d/%y").date()
 
