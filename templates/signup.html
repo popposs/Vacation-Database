@@ -4,38 +4,36 @@
     <head>
         <meta charset="utf-8">
         <title>Upgrade Coding Challenge</title>
-        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
-        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
         <script type = "text/babel" language = "javascript">
-            let reservedDates = function() {
-              $.ajax({
-                url: '/urls/${page}',
+            let reservedDates = $.ajax({
+                url: '/reserved',
                 type: 'GET',
                 success: function(response) {
-                  return response;
+                    return response
                 },
+                async: false,
                 error: function(error) {
                   console.log(error);
                 }
-              }).done(function(data) {
-                return data['urls'];
-              }).fail(function (jqXHR, textStatus, error) {
-                console.log("Post error: " + error);
-                return null;
-              });
+            }).responseText
+
+            function DisableSpecificDates(date) {
+                let string = jQuery.datepicker.formatDate('mm/dd/y', date);
+                return [ reservedDates.indexOf(string) == -1 ]
             };
 
-        <script>
-        $(function() {
-            $( ".dtpick" ).datepicker({
-                beforeShowDay: (date) => {
-                    let string = jQuery.datepicker.formatDate('mm/dd/yy', date);
-                    return [ array.indexOf(string) == -1 ]
-                }
+            $(function() {
+                $( ".dtpick" ).datepicker({
+                    beforeShowDay: DisableSpecificDates
+                });
             });
-        });
         </script>
     </head>
 
