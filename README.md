@@ -1,16 +1,13 @@
-This is a working example of a multi-container flask application with Postgres as the database fronted by the nginx reverse proxy. See my [blog post](http://www.ameyalokare.com/docker/2017/09/20/nginx-flask-postgres-docker-compose.html) for a detailed explanation.
+# Upgrade Take-home
 
-## Usage
+Created with Postgres, Nginx, Flask + Gunicorn. Includes front-end to test some functionality.
 
-1. Bootstrap the DB
-```bash
-$ docker-compose up -d db
-$ docker-compose run --rm flaskapp /bin/bash -c "cd /opt/services/flaskapp/src && python -c  'import database; database.init_db()'"
-```
+### Routes:
+* `/` for registration page
+* `/cancel/<uid>` to cancel by unique registration id
+* `/modify/<uid>/mmddyy/mmddyy` to modify registration arrival and departure dates
 
-2. Bring up the cluster
-```bash
-$ docker-compose up -d
-```
-
-3. Browse to localhost:8080 to see the app in action.
+### Setup:
+1. `make bootstrap-db` to initialize Postgres tables
+2. `make all` to run the rest of the containers (nginx, flask app)
+3. `localhost:8080` to test the app
