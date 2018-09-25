@@ -76,7 +76,19 @@ def reserve_dates(name, email, start_date, end_date):
 # The unique booking identifier can be used to modify or cancel the reservation later on. Provide appropriate end point(s) to allow
 # modification/cancellation of an existing reservation
 def cancel_reservation(unique_id):
-    pass
+    try:
+        reservation_query = db_session.query(Reservation).filter_by(id=unique_id).delete()
+        db_session.commit()
+        return True
+    except Exception as e:
+        print(e)
+        return False
 
-def modify_reservation(unique_id):
-    pass
+def modify_reservation(unique_id, start_date, end_date):
+    start_date = datetime.strptime(start_date, '%m/%d/%y').date()
+    end_date = datetime.strptime(end_date, '%m/%d/%y').date()
+
+    query_result = db_session.query(Reservation).filter_by(id=unique_id).update({"arrival_date": start_date, "departure_date": end_date})
+    db_session.commit()
+
+    return True

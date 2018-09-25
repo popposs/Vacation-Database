@@ -8,4 +8,6 @@ class SignupForm(FlaskForm):
     arrival_date = DateField('arrival_date', format="%m/%d/%Y")
     departure_date = DateField('departure_date', format="%m/%d/%Y")
 
+class ModifyForm(FlaskForm):
+    uid = StringField('uid', validators=[DataRequired()])
 

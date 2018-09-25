@@ -2,12 +2,12 @@ from datetime import date, datetime, timedelta
 import os, json
 
 from flask import Flask, render_template, redirect, url_for
-from forms import SignupForm
+from forms import SignupForm, ModifyForm
 
 from reservations import Reservation
 from database import db_session
 
-from schedule import get_availability, reserve_dates
+from schedule import reserve_dates, cancel_reservation, modify_reservation
 
 app = Flask(__name__)
 app.secret_key = os.environ['APP_SECRET_KEY']
@@ -43,6 +43,17 @@ def get_reserved():
                 ret.append(reserved_date)
 
     return json.dumps(ret)
+
+@app.route("/cancel/<uid>")
+def cancel_reserved(uid):
+    return str(cancel_reservation(uid))
+
+# dates input in format mmddyy
+@app.route("/modify/<uid>/<start_date>/<end_date>")
+def modify_reserved(uid, start_date, end_date):
+    start_date = "{}/{}/{}".format(start_date[:2], start_date[2:4], start_date[4:])
+    end_date = "{}/{}/{}".format(end_date[:2], end_date[2:4], end_date[4:])
+    return str(modify_reservation(uid, start_date, end_date))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5090, debug=True)
