@@ -31,7 +31,8 @@
 
             $(function() {
                 $( ".dtpick" ).datepicker({
-                    beforeShowDay: DisableSpecificDates
+                    beforeShowDay: DisableSpecificDates,
+                    minDate: new Date()
                 });
             });
         </script>
