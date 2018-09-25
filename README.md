@@ -1,6 +1,6 @@
 # Upgrade Take-home
 
-Created with Postgres, Nginx, Flask + Gunicorn. Includes front-end to test some functionality.
+Created with Postgres, Nginx, Flask + Gunicorn. Includes front-end to test some functionality. Make sure you have Docker before running.
 
 ### Routes:
 * `/` for registration page
