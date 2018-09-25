@@ -15,6 +15,17 @@ app = Flask(__name__)
 session = flask_scoped_session(session_factory, app)
 app.secret_key = os.environ['APP_SECRET_KEY']
 
+@app.route("/signup/<name>/<email>/<start_date>/<end_date>")
+def signup_route(name, email, start_date, end_date):
+    arrival_str = "{}/{}/{}".format(start_date[:2], start_date[2:4], start_date[4:])
+    departure_str = "{}/{}/{}".format(end_date[:2], end_date[2:4], end_date[4:])
+
+    arrival = datetime.strptime(arrival_str, "%m/%d/%y").date()
+    departure = datetime.strptime(departure_str, "%m/%d/%y").date()
+    unique_id = reserve_dates(name, email, arrival, departure, session)
+
+    return "Unique Registration ID: {} for {} to {}".format(unique_id, arrival_str, departure_str)
+
 # Provide an end point for reserving the campsite. The user will provide his/her email & full name at the time of reserving the campsite
 # along with intended arrival date and departure date. Return a unique booking identifier back to the caller if the reservation is successful.
 @app.route("/", methods=('GET', 'POST'))

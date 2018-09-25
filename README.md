@@ -11,3 +11,11 @@ Created with Postgres, Nginx, Flask + Gunicorn. Includes front-end to test some 
 1. `make bootstrap-db` to initialize Postgres tables
 2. `make all` to run the rest of the containers (nginx, flask app)
 3. `localhost:8080` to test the app
+
+### Testing:
+
+OSX:
+* `sudo npm install -g loadtest`
+* ` loadtest -n 1000 -c 20 -k http://localhost:8080/reserved`
+
+* Others: `ab -k -c 20 -n 1000 localhost:8080/reserved`
