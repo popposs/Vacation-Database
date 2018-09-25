@@ -1,6 +1,6 @@
 # Upgrade Take-home
 
-Created with Postgres, Nginx, Flask + Gunicorn. Includes front-end to test some functionality.
+Created with Postgres, Nginx, Flask + Gunicorn. Includes front-end to test some functionality. Make sure you have Docker before running.
 
 ### Routes:
 * `/` for registration page
@@ -8,7 +8,6 @@ Created with Postgres, Nginx, Flask + Gunicorn. Includes front-end to test some 
 * `/modify/<uid>/mmddyy/mmddyy` to modify registration arrival and departure dates
 
 ### Setup:
-0. Install and run Docker
 1. `make bootstrap-db` to initialize Postgres tables
 2. `make all` to run the rest of the containers (nginx, flask app)
 3. `localhost:8080` to test the app
