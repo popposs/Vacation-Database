@@ -1,15 +1,18 @@
 from datetime import date, datetime, timedelta
 import os, json
 
+from flask_sqlalchemy_session import flask_scoped_session
 from flask import Flask, render_template, redirect, url_for
 from forms import SignupForm, ModifyForm
 
 from reservations import Reservation
-from database import db_session
+from database import db_session, session_factory
 
 from schedule import reserve_dates, cancel_reservation, modify_reservation
 
+
 app = Flask(__name__)
+session = flask_scoped_session(session_factory, app)
 app.secret_key = os.environ['APP_SECRET_KEY']
 
 # Provide an end point for reserving the campsite. The user will provide his/her email & full name at the time of reserving the campsite
@@ -23,7 +26,7 @@ def signup():
         arrival =  datetime.strptime(form.arrival_date.data.strftime('%x'), "%m/%d/%y").date()
         departure = datetime.strptime(form.departure_date.data.strftime('%x'), "%m/%d/%y").date()
 
-        unique_id = reserve_dates(name, email, arrival, departure)
+        unique_id = reserve_dates(name, email, arrival, departure, session)
         arrival_str = datetime.strftime(arrival, '%m/%d/%y')
         departure_str = datetime.strftime(departure, '%m/%d/%y')
 
@@ -32,7 +35,7 @@ def signup():
 
 @app.route("/reserved", methods=['GET'])
 def get_reserved():
-    all_reservations = [value for value in db_session.query(Reservation).all()]
+    all_reservations = [value for value in session.query(Reservation).all()]
     ret = []
 
     for r in all_reservations:
@@ -46,14 +49,14 @@ def get_reserved():
 
 @app.route("/cancel/<uid>")
 def cancel_reserved(uid):
-    return str(cancel_reservation(uid))
+    return str(cancel_reservation(uid, session))
 
 # dates input in format mmddyy
 @app.route("/modify/<uid>/<start_date>/<end_date>")
 def modify_reserved(uid, start_date, end_date):
     start_date = "{}/{}/{}".format(start_date[:2], start_date[2:4], start_date[4:])
     end_date = "{}/{}/{}".format(end_date[:2], end_date[2:4], end_date[4:])
-    return str(modify_reservation(uid, start_date, end_date))
+    return str(modify_reservation(uid, start_date, end_date, session))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5090, debug=True)

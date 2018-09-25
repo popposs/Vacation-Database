@@ -10,9 +10,10 @@ host = 'db'
 port = '5432'
 engine = create_engine('postgres://%s:%s@%s:%s/%s' % (user, pwd, host, port, db))
 
-db_session = scoped_session(sessionmaker(autocommit=False,
-                                         autoflush=False,
-                                         bind=engine))
+
+session_factory = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+db_session = scoped_session(session_factory)
+
 Base = declarative_base()
 Base.query = db_session.query_property()
 

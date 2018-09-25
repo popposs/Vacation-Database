@@ -6,7 +6,7 @@ from dateutil.relativedelta import relativedelta
 
 # The users will need to find out when the campsite is available. So the system should expose an API to provide information of the
 # availability of the campsite for a given date range with the default being 1 month.
-def get_availability(start_date, end_date):
+def get_availability(start_date, end_date, session):
     start_date = datetime.strptime(start_date, '%m/%d/%y').date()
 
     if end_date is None:
@@ -22,7 +22,7 @@ def get_availability(start_date, end_date):
     for i in range(delta.days + 1):
         base_valid_days.add((start_date + timedelta(i)).strftime('%m/%d/%y'))
 
-    reservedDates = db_session.query(Reservation).filter(Reservation.arrival_date>=start_date, Reservation.departure_date<=end_date).all()
+    reservedDates = session.query(Reservation).filter(Reservation.arrival_date>=start_date, Reservation.departure_date<=end_date).all()
     reserved = set()
 
     for r in reservedDates:
@@ -37,8 +37,8 @@ def get_availability(start_date, end_date):
 ### Returns (boolean for pass/fail, string for description)
 # The campsite can be reserved for max 3 days.
 # The campsite can be reserved minimum 1 day(s) ahead of arrival and up to 1 month in advance.
-def check_conditions(start_date, end_date):
-    availability = get_availability(start_date, end_date)
+def check_conditions(start_date, end_date, session):
+    availability = get_availability(start_date, end_date, session)
     print('available', availability, start_date, end_date)
 
     start_date_obj = datetime.strptime(start_date, '%m/%d/%y').date()
@@ -59,36 +59,48 @@ def check_conditions(start_date, end_date):
 
     return (True, "")
 
-def reserve_dates(name, email, start_date, end_date):
+def reserve_dates(name, email, start_date, end_date, session):
     start_date = start_date.strftime('%m/%d/%y')
     end_date = end_date.strftime('%m/%d/%y')
 
-    check = check_conditions(start_date, end_date)
-    if check[0] is True:
-        signup = Reservation(name=name, email=email, arrival_date=start_date, departure_date=end_date)
-        db_session.add(signup)
-        db_session.commit()
-        return db_session.query(Reservation.id).filter_by(name=name).filter_by(email=email).first()[0]
-    else:
-        return check[1] # user readable error
+    try:
+        check = check_conditions(start_date, end_date, session)
+        if check[0] is True:
+            signup = Reservation(name=name, email=email, arrival_date=start_date, departure_date=end_date)
+            session.add(signup)
+            session.commit()
+            return session.query(Reservation.id).filter_by(name=name).filter_by(email=email).first()[0]
+        else:
+            return check[1] # user readable error
+    except Exception as e:
+        session.close()
+        print(e)
+        return "reserve dates has failed"
 
 
 # The unique booking identifier can be used to modify or cancel the reservation later on. Provide appropriate end point(s) to allow
 # modification/cancellation of an existing reservation
-def cancel_reservation(unique_id):
+def cancel_reservation(unique_id, session):
     try:
-        reservation_query = db_session.query(Reservation).filter_by(id=unique_id).delete()
-        db_session.commit()
-        return True
+        session = db_session()
+        reservation_query = session.query(Reservation).filter_by(id=unique_id).delete()
+        session.commit()
+        return 'cancelled successfully'
     except Exception as e:
+        session.close()
         print(e)
-        return False
+        return "cancel reservation has failed"
 
-def modify_reservation(unique_id, start_date, end_date):
+def modify_reservation(unique_id, start_date, end_date, session):
     start_date = datetime.strptime(start_date, '%m/%d/%y').date()
     end_date = datetime.strptime(end_date, '%m/%d/%y').date()
 
-    query_result = db_session.query(Reservation).filter_by(id=unique_id).update({"arrival_date": start_date, "departure_date": end_date})
-    db_session.commit()
+    try:
+        query_result = session.query(Reservation).filter_by(id=unique_id).update({"arrival_date": start_date, "departure_date": end_date})
+        session.commit()
+        return 'modified successfully'
+    except Exception as e:
+        print(e)
+        session.close()
+        return "modify_reservation has failed"
 
-    return True

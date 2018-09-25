@@ -11,6 +11,7 @@ sqlalchemy = "*"
 flask-wtf = "*"
 datedelta = "*"
 python-dateutil = "*"
+flask-sqlalchemy-session = "*"
 
 [dev-packages]
 

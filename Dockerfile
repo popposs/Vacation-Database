@@ -1,5 +1,4 @@
 FROM python:3
-MAINTAINER Ameya Lokare <lokare.ameya@gmail.com>
 
 ENV PYTHONUNBUFFERED 1
 
@@ -22,4 +21,5 @@ COPY . /opt/services/flaskapp/src
 RUN python3 setup.py install
 
 EXPOSE 5090
-CMD ["python", "app.py"]
+#CMD ["python", "app.py"]
+CMD ["gunicorn", "app:app", "-w", "4", "-b", ":5090"]
