@@ -1,10 +1,11 @@
-import calendar, datetime, datedelta
+import calendar, datedelta
+from datetime import datetime
 from reservations import Reservation
 from database import db_session
 
-c = calendar.TextCalendar(calendar.SUNDAY)
-str = c.formatmonth(2018, 1)
-print(str)
+# c = calendar.TextCalendar(calendar.SUNDAY)
+# str = c.formatmonth(2018, 1)
+# print(str)
 
 
 # The users will need to find out when the campsite is available. So the system should expose an API to provide information of the
@@ -12,7 +13,7 @@ print(str)
 def get_availability(start_date, end_date):
     if end_date is None:
         end_date = start_date + datedelta.MONTH
-    print(db_session.query(Reservation).all())
+    return db_session.query(Reservation).all()
     # print(db_session.query(Reservation).filter(Reservation.arrival_date>=start_date, Reservation.departure_date<=end_date).all())
 
 # The campsite can be reserved for max 3 days.

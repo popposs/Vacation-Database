@@ -1,12 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>Upgrade Coding Challenge</title>
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+        <script type = "text/babel" language = "javascript">
+            let reservedDates = function() {
+              $.ajax({
+                url: '/urls/${page}',
+                type: 'GET',
+                success: function(response) {
+                  return response;
+                },
+                error: function(error) {
+                  console.log(error);
+                }
+              }).done(function(data) {
+                return data['urls'];
+              }).fail(function (jqXHR, textStatus, error) {
+                console.log("Post error: " + error);
+                return null;
+              });
+            };
+
+        <script>
+        $(function() {
+            $( ".dtpick" ).datepicker({
+                beforeShowDay: (date) => {
+                    let string = jQuery.datepicker.formatDate('mm/dd/yy', date);
+                    return [ array.indexOf(string) == -1 ]
+                }
+            });
+        });
+        </script>
+    </head>
+
     <body>
-        <h1> Registration! </h1>
+        <h1> Volcano Campsite Registration </h1>
         <form method="POST" action="/">
             {{ form.csrf_token }}
             {{ form.name.label }} {{ form.name(size=20) }}
             {{ form.email.label }} {{ form.email(size=20) }}
-            <input type="submit" value="Go">
+
+            {{ form.hidden_tag() }}
+            {{ "Arrival" }} {{ form.arrival_date(class="dtpick") }}
+            {{ "Departure" }} {{ form.departure_date(class="dtpick") }}
+            <button type="submit">Go</button>
         </form>
     </body>
 </html>
