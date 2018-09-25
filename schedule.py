@@ -6,6 +6,10 @@ from dateutil.relativedelta import relativedelta
 
 # The users will need to find out when the campsite is available. So the system should expose an API to provide information of the
 # availability of the campsite for a given date range with the default being 1 month.
+# Input: start_date : String
+# Input: end_date : String
+# Input: session : Flask Scoped Session
+# Return: available days in between range
 def get_availability(start_date, end_date, session):
     start_date = datetime.strptime(start_date, '%m/%d/%y').date()
 
@@ -13,8 +17,6 @@ def get_availability(start_date, end_date, session):
         end_date = start_date + datedelta.MONTH
 
     end_date = datetime.strptime(end_date, '%m/%d/%y').date()
-
-    print('testing', start_date, end_date)
 
     base_valid_days = set()
 
@@ -34,9 +36,12 @@ def get_availability(start_date, end_date, session):
     # return available days
     return list(base_valid_days - reserved)
 
-### Returns (boolean for pass/fail, string for description)
 # The campsite can be reserved for max 3 days.
 # The campsite can be reserved minimum 1 day(s) ahead of arrival and up to 1 month in advance.
+# Input: start_date : String
+# Input: end_date : String
+# Input: session : Flask Scoped Session
+# Return: (boolean, String) : Pass/Fail, Error Description
 def check_conditions(start_date, end_date, session):
     availability = get_availability(start_date, end_date, session)
     print('available', availability, start_date, end_date)
@@ -59,6 +64,13 @@ def check_conditions(start_date, end_date, session):
 
     return (True, "")
 
+# Reserves dates and returns a unique registration ID
+# Input: name : String
+# Input: email : String
+# Input: start_date : datetime object
+# Input: end_date : datetime object
+# Input: session : Flask Scoped Session
+# Return: int : unique registration ID
 def reserve_dates(name, email, start_date, end_date, session):
     start_date = start_date.strftime('%m/%d/%y')
     end_date = end_date.strftime('%m/%d/%y')
@@ -80,6 +92,9 @@ def reserve_dates(name, email, start_date, end_date, session):
 
 # The unique booking identifier can be used to modify or cancel the reservation later on. Provide appropriate end point(s) to allow
 # modification/cancellation of an existing reservation
+# Input: unique_id : int
+# Input: session : Flask Scoped Session
+# Return: String : Success/Error desription
 def cancel_reservation(unique_id, session):
     try:
         session = db_session()
@@ -91,6 +106,11 @@ def cancel_reservation(unique_id, session):
         print(e)
         return "cancel reservation has failed"
 
+# Input: unique_id : int
+# Input: start_date : String
+# Input: end_date : String
+# Input: session : Flask Scoped Session
+# Return: String: Success/Error description
 def modify_reservation(unique_id, start_date, end_date, session):
     start_date = datetime.strptime(start_date, '%m/%d/%y').date()
     end_date = datetime.strptime(end_date, '%m/%d/%y').date()
