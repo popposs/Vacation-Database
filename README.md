@@ -12,6 +12,11 @@ Created with Postgres, Nginx, Flask + Gunicorn. Includes front-end to test some 
 2. `make all` to run the rest of the containers (nginx, flask app)
 3. `localhost:8080` to test the app
 
+### To Clear Database:
+1. `make refresh-db`
+2. `docker kill $(docker ps -aq)`
+3. `make bootstrap-db`
+
 ### Testing:
 
 OSX:

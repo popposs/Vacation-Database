@@ -44,7 +44,6 @@ def get_availability(start_date, end_date, session):
 # Return: (boolean, String) : Pass/Fail, Error Description
 def check_conditions(start_date, end_date, session):
     availability = get_availability(start_date, end_date, session)
-    print('available', availability, start_date, end_date)
 
     start_date_obj = datetime.strptime(start_date, '%m/%d/%y').date()
     end_date_obj = datetime.strptime(end_date, '%m/%d/%y').date()
@@ -56,7 +55,7 @@ def check_conditions(start_date, end_date, session):
     elif (end_date_obj - start_date_obj).days > 3:
         return (False, "Duration cannot be longer than 3 days.")
 
-    elif start_date_obj <= today:
+    elif start_date_obj < today:
         return (False, "Cannot reserve less than 1 day in advance.")
 
     elif end_date_obj > today + relativedelta(months=+1):

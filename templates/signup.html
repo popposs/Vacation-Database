@@ -57,6 +57,13 @@
                     date2.setDate(date2.getDate() + 1);
                     $('#departure_date').datepicker('setDate', date2);
                     $('#departure_date').datepicker('option', 'minDate', date2);
+
+                    let date1 = $('#arrival_date').datepicker('getDate');
+                    date2 = Date.parse($('#departure_date').datepicker('getDate'));
+                    date1.setDate(date1.getDate() + 3)
+                    if (date2 < date1) {
+                        $('#departure_date').datepicker('option', 'maxDate', date1);
+                    }
                 }
             });
 
@@ -66,12 +73,14 @@
                 beforeShowDay: DisableSpecificDates,
                 minDate:  $('#arrival_date').datepicker('getDate'),
                 maxDate: '+1m',
-                onClose: function () {
+                onSelect: function (date) {
                     let date1 = $('#arrival_date').datepicker('getDate');
-                    let date2 = $('#departure_date').datepicker('getDate');
-                    if (date2 <= date1) {
-                        let minDate = $('#departure_date').datepicker('option', 'minDate');
-                        $('#departure_date').datepicker('setDate', minDate);
+                    let date2 = Date.parse(date);
+
+                    date1.setDate(date1.getDate() + 3)
+                    if (date2 < date1) {
+                        // let minDate = $('#departure_date').datepicker('option', 'maxDate');
+                        $('#departure_date').datepicker('option', 'maxDate', date1);
                     }
                 }
             });
