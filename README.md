@@ -18,10 +18,5 @@ Created with Postgres, Nginx, Flask + Gunicorn. Includes front-end to test some 
 3. `make bootstrap-db`
 
 ### Testing:
-
-OSX:
 * `sudo npm install -g loadtest`
 * ` loadtest -n 1000 -c 20 -k http://localhost:8080/reserved`
-
-Others:
-* `ab -k -c 20 -n 1000 localhost:8080/reserved`
