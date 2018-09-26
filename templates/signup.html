@@ -46,17 +46,33 @@
                 return date;
             }
 
-            let dates = $("#arrival_date, #departure_date").datepicker({
+            $("#arrival_date").datepicker({
                 defaultDate: "+1d",
                 changeMonth: true,
                 beforeShowDay: DisableSpecificDates,
                 minDate: '+1d',
                 maxDate: '+1m',
-                onSelect: function(selectedDate) {
-                    let option = this.id == "arrival_date" ? "minDate" : "maxDate",
-                        instance = $(this).data("datepicker"),
-                        date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
-                    dates.not(this).datepicker("option", option, date);
+                onSelect: function (date) {
+                    let date2 = $('#arrival_date').datepicker('getDate');
+                    date2.setDate(date2.getDate() + 1);
+                    $('#departure_date').datepicker('setDate', date2);
+                    $('#departure_date').datepicker('option', 'minDate', date2);
+                }
+            });
+
+            $("#departure_date").datepicker({
+                defaultDate: "+1d",
+                changeMonth: true,
+                beforeShowDay: DisableSpecificDates,
+                minDate:  $('#arrival_date').datepicker('getDate'),
+                maxDate: '+1m',
+                onClose: function () {
+                    let date1 = $('#arrival_date').datepicker('getDate');
+                    let date2 = $('#departure_date').datepicker('getDate');
+                    if (date2 <= date1) {
+                        let minDate = $('#departure_date').datepicker('option', 'minDate');
+                        $('#departure_date').datepicker('setDate', minDate);
+                    }
                 }
             });
         </script>
