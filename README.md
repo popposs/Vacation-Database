@@ -1,4 +1,4 @@
-# Upgrade Take-home
+# Vacation Database
 
 Created with Postgres, Nginx, Flask + Gunicorn. Includes front-end to test some functionality. Make sure you have Docker before running.
 
