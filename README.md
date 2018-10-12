@@ -1,6 +1,6 @@
 # Vacation Database
 
-Created with Postgres, Nginx, Flask + Gunicorn. Includes front-end to test some functionality. Make sure you have Docker before running.
+Created with Postgres, Nginx, Flask + Gunicorn. Includes front-end to test some functionality. Make sure you have Docker before running. Handles concurrent API calls with Flask-SqlAlchemy's Scoped Session and Gunicorn's threaded workers.
 
 ### Routes:
 * `/` for registration page
